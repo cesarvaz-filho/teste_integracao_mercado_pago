@@ -1,9 +1,8 @@
-//const mercadopago = require('../config/mercadoPagoConfig');
 const { MercadoPagoConfig, Payment } = require('mercadopago');
 
 const client = new MercadoPagoConfig(
   {
-    accessToken: 'TEST-2269202356164791-071521-c821f8ac5ea180be181fe8178095a139-260686843',
+    accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
     options: { timeout: 5000, idempotencyKey: 'abc' }
   }
 );
@@ -26,21 +25,23 @@ const createPayment = async (req, res) => {
   };
 
   const requestOptions = {
-    idempotencyKey: '<IDEMPOTENCY_KEY>',
+    idempotencyKey: 'abc',
   };
 
-  payment.create({ body, requestOptions })
-    .then((result) => {
-      console.log("result");
-      console.log(result);
-    })
-    .catch((error) => {
-      console.log("error");
-      console.log(error);
+  try {
+    console.log('Sending payment request with body:', body);
+    const result = await payment.create({ body, requestOptions });
+    console.log('Payment result:', result);
+    res.json(result.body);
+  } catch (error) {
+    console.error('Error creating payment:', error);
+    if (error.response) {
+      console.error('Error response data:', error.response.data);
+      res.status(500).json({ error: error.response.data });
+    } else {
       res.status(500).json({ error: error.message });
-    });
-
-  res.send("Tudo OK");
+    }
+  }
 
 };
 
