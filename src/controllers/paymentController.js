@@ -26,6 +26,9 @@ const createPayment = async (req, res) => {
 
   const requestOptions = {
     idempotencyKey: 'abc',
+    headers: {
+      'Authorization': `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`
+    }
   };
 
   try {
