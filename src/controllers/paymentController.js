@@ -1,4 +1,5 @@
 const { MercadoPagoConfig, Payment } = require('mercadopago');
+require('dotenv').config();
 
 const client = new MercadoPagoConfig(
   {
